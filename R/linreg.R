@@ -25,11 +25,11 @@ linreg <- function(formula, data){
   X <- model.matrix(as.formula(var1), data)
   Y <- all.vars(expr = formula)
   
-  betas <- solve((t(X)%*%X))%*%t(X) %*% data[,Y[1]==names(data)]
+  betas <- solve((t(X) %*% X))%*%t(X) %*% data[,Y[1]==names(data)]
   
   fitts <- X%*%betas
   resid <- data$Y - fitts
-  df <- nrow(data)- length(Y)
+  df <- nrow(data)- length(colnames(X))
   sigma_2_resid <- (t(resid) %*% resid)/df
   sigma_2_resid <- c(sigma_2_resid)
   
@@ -43,11 +43,44 @@ linreg <- function(formula, data){
                                                Pvalues ="numeric", S_t = "numeric", Tvalue = "numeric",
                                             Residual = "numeric", Fits = "numeric"),
                         methods = list(  
-                          
+                          #########################
                           print.linreg <<- function(result) {
-                            cat(paste(result$Call), "\n")
-                            cat(paste(result$Coefficients), "\n")
-                           },
+                            
+                            beta<-as.character(round(result$Coefficients,2))
+                            namn<-rownames(betas)
+                            
+                            n<-max(c(nchar(beta),20))
+                            if(TRUE%in%(nchar(namn)>n)){
+                              namn[nchar(namn)>n]<-
+                                paste(substr(namn[nchar(namn)>n],1,(n-3)),"...",sep="")
+                            }
+                            
+                            for(i in 1:length(result$Coefficients)){
+                              if((nchar(namn)[i]==nchar(beta)[i])==FALSE){
+                                
+                                andra<-c(namn[i],beta[i])
+                                ny<-andra
+                                antal<-max(nchar(andra))
+                                
+                                lagga_till<-antal-min(nchar(andra))
+                                plus<-paste(rep(" ",lagga_till),collapse = "")
+                                ny[nchar(andra)<antal]<-paste(plus,andra[nchar(andra)<antal],sep = "")
+                                
+                                namn[i]<-ny[1]
+                                beta[i]<-ny[2]
+                              }
+                              
+                            }
+                            cat("Call:",sep="\n")
+                            cat(paste(as.character(result$Call)[2],as.character(result$Call)[1],as.character(result$Call)[3]), sep="\n")
+                            cat(sep="\n")
+                            cat("Coefficients:",sep="\n")
+                            cat(namn,sep="\t")
+                            cat("","\n")
+                            cat(beta,sep="\t")
+                            },
+                          
+                          #########################
                           
                           plot.linreg <<- function(result) {
                             dataint <- data.frame(residual = result$Residual, fitos = result$Fits, std_residual = sqrt(abs(scale(result$Residual))))
@@ -65,19 +98,19 @@ linreg <- function(formula, data){
                               geom_hline(yintercept = 0) + theme_bw() + ggtitle("Standardized residuals vs Fitted") +
                               theme(plot.title = element_text(hjust = 0.5))
                             
-                            func1 <- function()
                             cat ("Press [enter] to continue")
                             line <- readline()
                             pl_1
+                            Sys.sleep(0.01)
                             cat ("Press [enter] to continue")
                             line <- readline()
                             pl_2
                         },
-                       
+                        #########################
                         
                         summary.linreg <<- function(result){
                           cat("Call:", "\n")
-                          cat(result$Call, "\n")
+                          cat(paste(result$Call), "\n")
                           cat("Coefficients:", sep ="\n")
                           cat(c("", "Estimate", "Std.Error", "t value", "Pr(>|t|)"), sep = "\t")
                           cat("",sep="\n")
@@ -87,10 +120,25 @@ linreg <- function(formula, data){
                             cat(sep="\n")
                           }
                         },
-                        
+                        ######################### INHERIT SHIT
                         resid.linreg <<- function(result){
-                          
+                          residuaallls <- result$Residual
+                          names(residuaallls) <- 1:length(residuaallls)
+                          residuaallls
+                        },
+                        #########################
+                        coef.linreg <<- function(result){
+                          coeeeefff <- result$Coefficients
+                          names(coeeeefff) <- rownames(betas)
+                          coeeeefff
+                        },
+                        #########################
+                        pred.linreg <<- function(result){
+                          fiiiiiits <- result$Fits
+                          names(fiiiiiits) <- 1:length(fiiiiiits)
+                          fiiiiiits
                         }
+                        
                   )
             )
   
@@ -99,8 +147,44 @@ linreg <- function(formula, data){
   result <- reglin(Call = formula, Coefficients = c(betas), Pvalues = c(p_values),
                    S_t = c(var_betas), Tvalue = c(t_betas), Residual = c(resid), Fits = c(fitts))
   
+  ret_u <- function() {
+    
+    beta<-as.character(round(result$Coefficients,2))
+    namn<-rownames(betas)
+    
+    n<-max(c(nchar(beta),20))
+    if(TRUE%in%(nchar(namn)>n)){
+      namn[nchar(namn)>n]<-
+        paste(substr(namn[nchar(namn)>n],1,(n-3)),"...",sep="")
+    }
+    
+    for(i in 1:length(result$Coefficients)){
+      if((nchar(namn)[i]==nchar(beta)[i])==FALSE){
+        
+        andra<-c(namn[i],beta[i])
+        ny<-andra
+        antal<-max(nchar(andra))
+        
+        lagga_till<-antal-min(nchar(andra))
+        plus<-paste(rep(" ",lagga_till),collapse = "")
+        ny[nchar(andra)<antal]<-paste(plus,andra[nchar(andra)<antal],sep = "")
+        
+        namn[i]<-ny[1]
+        beta[i]<-ny[2]
+      }
+      
+    }
+    cat("Call:",sep="\n")
+    cat(paste(as.character(result$Call)[2],as.character(result$Call)[1],as.character(result$Call)[3]), sep="\n")
+    cat(sep="\n")
+    cat("Coefficients:",sep="\n")
+    cat(namn,sep="\t")
+    cat("","\n")
+    cat(beta,sep="\t")
+  }
+  ret2 <- ret_u()
   
-  result
+  return()
 }
 
 
@@ -111,13 +195,42 @@ test <- linreg(Y ~ x1 + x2 + x3, data)
 print(test)
 plot(test)
 summary(test)
+pred(test)
+
+methods(predict)
+
+inherits("predict", "pred")
+
+residuals(lm(Y ~ x1 + x2 + x3, data))
 
 
-resid(lm(Y ~ x1 + x2 + x3, data))
 
 
 
 
- 
+##Look in to this later!!! (It is a puch to next graph, thing)
+readkeygraph <- function(prompt)
+{
+  getGraphicsEvent(prompt = prompt, 
+                   onMouseDown = NULL, onMouseMove = NULL,
+                   onMouseUp = NULL, onKeybd = onKeybd,
+                   consolePrompt = "[click on graph then follow top prompt to continue]")
+  Sys.sleep(0.01)
+  return(keyPressed)
+}
 
+onKeybd <- function(key)
+{
+  keyPressed <<- key
+}
 
+xaxis=c(1:10) # Set up the x-axis.
+yaxis=runif(10,min=0,max=1) # Set up the y-axis.
+plot(xaxis,yaxis)
+
+for (i in xaxis)
+{
+  # On each keypress, color the points on the graph in red, one by one.
+  points(i,yaxis[i],col="red", pch=19)
+  keyPressed = readkeygraph("[press any key to continue]")
+}
