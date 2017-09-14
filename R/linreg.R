@@ -3,14 +3,16 @@
 #linreg
 
 
-data <- data.frame(x1=rnorm(100,1,50),x2=rnorm(100,5,50), Y = rnorm(100, 7,35))
+data <- data.frame(x1=rnorm(120,1,50),x2=rnorm(120,5,50), Y = rnorm(120, 7,35), x3=as.factor(rep(1:12)))
 
 
-formulas <- Y ~ x1 + x2
+formula <- Y ~ x1 + x2 + x3
 
 
 
 linreg <- function(formula, data){
+  
+  require(ggplot2)
   
   exp <-all.vars(expr = formula)[2:length(all.vars(expr = formula))]
   
@@ -35,28 +37,87 @@ linreg <- function(formula, data){
   
   t_betas <- betas/sqrt(var_betas)
   
-  p_values <- pt(q = t_betas,df = df)
+  p_values <- 2*pt(abs(t_betas), df,lower.tail = FALSE)
   
-  reglin <- setRefClass("linreg",fields = c("Call", "Coefficients", "Xterms", "Yterms", "Fitts", 
-                                            "Resid", "df", "Sigma_2_resid", 
-                                            "Var_betas", "tBetas", "Pvalues") )
+  reglin <- setRefClass("linreg",fields = list(Call = "formula", Coefficients = "numeric", 
+                                               Pvalues ="numeric", S_t = "numeric", Tvalue = "numeric",
+                                            Residual = "numeric", Fits = "numeric"),
+                        methods = list(  
+                          
+                          print.linreg <<- function(result) {
+                            cat(paste(result$Call), "\n")
+                            cat(paste(result$Coefficients), "\n")
+                           },
+                          
+                          plot.linreg <<- function(result) {
+                            dataint <- data.frame(residual = result$Residual, fitos = result$Fits, std_residual = sqrt(abs(scale(result$Residual))))
+                            #Residuals vs Fitted
+                            pl_1 <- ggplot(data = dataint, aes(x = fitos, y = residual) ) +
+                              geom_point() + labs(x = "Fitted values", y = "Residuals") +
+                              geom_smooth(method="loess", se = FALSE, color = "red") + 
+                              geom_hline(yintercept = 0) + theme_bw() + ggtitle("Residuals vs Fitted") +
+                              theme(plot.title = element_text(hjust = 0.5))
+                            
+                            #Standardized residuals vs Fitted
+                            pl_2 <- ggplot(data = dataint, aes(x = fitos, y = std_residual) ) +
+                              geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
+                              geom_smooth(method="loess", se = FALSE, color = "red") + 
+                              geom_hline(yintercept = 0) + theme_bw() + ggtitle("Standardized residuals vs Fitted") +
+                              theme(plot.title = element_text(hjust = 0.5))
+                            
+                            func1 <- function()
+                            cat ("Press [enter] to continue")
+                            line <- readline()
+                            pl_1
+                            cat ("Press [enter] to continue")
+                            line <- readline()
+                            pl_2
+                        },
+                       
+                        
+                        summary.linreg <<- function(result){
+                          cat("Call:", "\n")
+                          cat(result$Call, "\n")
+                          cat("Coefficients:", sep ="\n")
+                          cat(c("", "Estimate", "Std.Error", "t value", "Pr(>|t|)"), sep = "\t")
+                          cat("",sep="\n")
+                          for(i in 1:length(rownames(betas))){
+                            cat(substr(rownames(betas)[i],1,4),"", round(result$Coefficients,5)[i],"", 
+                                round(result$S_t[i],5),"" , round(result$Pvalues[i], 5), sep="\t")
+                            cat(sep="\n")
+                          }
+                        },
+                        
+                        resid.linreg <<- function(result){
+                          
+                        }
+                  )
+            )
   
-  result <- reglin(Call = formula, Coefficients = betas, Xterms=X, Yterms=Y, Fitts=fitts, 
-                   Resid=resid, df=df, 
-                   Sigma_2_resid=sigma_2_resid, Var_betas=var_betas, 
-                   tBetas=t_betas, Pvalues = p_values)
   
-  return(result)
   
+  result <- reglin(Call = formula, Coefficients = c(betas), Pvalues = c(p_values),
+                   S_t = c(var_betas), Tvalue = c(t_betas), Residual = c(resid), Fits = c(fitts))
+  
+  
+  result
 }
 
-linreg(Y ~ x1 + x2, data)
 
-mod_object <- linreg(Y ~ x1 + x2, data)
-print(mod_object)
 
-mod_object <- lm(Petal.Length~Species, data = iris)
 
-plot(mod_object)
+test <- linreg(Y ~ x1 + x2 + x3, data)
+
+print(test)
+plot(test)
+summary(test)
+
+
+resid(lm(Y ~ x1 + x2 + x3, data))
+
+
+
+
+ 
 
 
