@@ -92,6 +92,7 @@ linreg<-function(formula,data){
 ##############
 data(iris)
 summary(lm(Petal.Length~Species, data = iris))
+summary(lm(formula,data))
 obj<-linreg(Petal.Length~Species, data = iris)
 obj<-linreg(formula, data = data)
 
