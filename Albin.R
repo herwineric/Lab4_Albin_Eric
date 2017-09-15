@@ -225,6 +225,8 @@ class(obj)
 methods(resid)
 
 #
+rm(ls()[ls()=="linreg"])
+rm("linreg")
 
 
 
