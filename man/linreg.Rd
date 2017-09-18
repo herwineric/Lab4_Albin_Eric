@@ -2,30 +2,26 @@
 % Please edit documentation in R/linreg.R
 \name{linreg}
 \alias{linreg}
-\title{Dijkstra algorithm}
+\title{Takes the euclidian algorithm}
 \usage{
 linreg(formula, data)
 }
 \arguments{
-\item{graph}{shall be a data.frame with three variables (v1, v2 and w) that contains the edges of the graph (from v1 to v2) with the weight of the edge (w).}
+\item{a}{shall be a numeric value and a scalar}
 
-\item{init_node}{shall be a numeric scalar that exist in the graph}
+\item{b}{shall be a numeric value and a scalar}
 }
 \value{
-Return the shortest path to everyother node from the starting node as a vector.
+Returns a numeric scalar that is the greatest common divisor of a and b.
 }
 \description{
-The algorithm takes a graph and an initial node and calculates the shortest path from the initial node to every other node in the graph.
+An algorithm that computes the greatest common divisor (GDC) of two numeric numbers.
 }
 \examples{
-wiki_graph <-data.frame(v1=c(1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,6,6,6),
-v2=c(2,3,6,1,3,4,1,2,4,6,2,3,5,4,6,1,3,5),
-w=c(7,9,14,7,10,15,9,10,11,2,15,11,6,6,9,14,2,9))
-
-dijkstra(wiki_graph,1)
-dijkstra(wiki_graph,3)
+euclidean(123612, 13892347912)
+euclidean(100, 1000)
 }
 \references{
-You can check how the algorithm work on it's page at 
- \href{https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors}{wikepedia.}
+The info about the algorithm can be found at this link  
+\href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{wikepedia.}
 }
