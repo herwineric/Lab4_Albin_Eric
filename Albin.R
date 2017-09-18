@@ -1,7 +1,8 @@
+require(ggplot2)
 ####  linreg ####
 linreg<-function(formula,data){
   
-  
+  #############
   x<-model.matrix(formula,data)
   y<-all.vars(formula)[1]
   y<-as.matrix(data[,names(data)==y])
@@ -40,7 +41,7 @@ linreg<-function(formula,data){
  
  class(result)<-"linreg"
  
- 
+ #########
  
  print.linreg <<- function(obj) {
    
@@ -175,9 +176,54 @@ linreg<-function(formula,data){
  }
  
  resid.linreg <<- function(obj){
-   return(obj$Resid)
+   result<-as.numeric(obj$Resid)
+   names(result)<-1:length(result)
+   return(result)
  }
  
+ coef.linreg<<-function(obj){
+   result<-obj$Coefficients
+   return(result)
+   
+ }
+ 
+ pred.linreg<<-function(obj){
+   result<-obj$Fitts
+   return(result)
+ }
+ 
+ plot.linreg <<- function(obj) {
+   dataint <- data.frame(residual = obj$Resid, fits = obj$Fitts, std_residual = sqrt(abs(scale(obj$Resid))))
+   # bandwidth1<-10
+   # bandwidth2<-10
+   # dataint$fits_residual_ks<-ksmooth(dataint$fits,dataint$residual,kernel = "normal",bandwidth=bandwidth1)$y
+   # dataint$fits_std_residual_ks<-ksmooth(dataint$fits,dataint$std_residual,kernel = "normal",bandwidth=bandwidth2)$y
+   # 
+   #Residuals vs Fitted
+   pl_1 <- ggplot(data = dataint, aes(x = fits, y = residual) ) +
+     geom_point() + 
+     labs(x = "Fitted values", y = "Residuals") +
+     #geom_smooth(method="glm", se = FALSE, color = "red") + 
+     geom_hline(yintercept = 0) + theme_bw() + ggtitle("Residuals vs Fitted") +
+     theme(plot.title = element_text(hjust = 0.5))
+   
+   #Standardized residuals vs Fitted
+   pl_2 <- ggplot(data = dataint, aes(x = fits, y = std_residual) ) +
+     geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
+     geom_smooth(method="loess", se = FALSE, color = "red") + 
+     geom_hline(yintercept = 0) + 
+     theme_bw() + 
+     ggtitle("Standardized residuals vs Fitted") +
+     theme(plot.title = element_text(hjust = 0.5))
+   
+   cat ("Press [enter] to continue")
+   line <- readline()
+   pl_1
+   Sys.sleep(0.01)
+   cat ("Press [enter] to continue")
+   line <- readline()
+   pl_2
+ }
  ###########
  # reglin <- setRefClass("linreg",fields = c("Call", "Coefficients", "Xterms", "Yterms", "Fitts", 
  #                                           "Resid", "df", "Var_residuals", 
@@ -207,28 +253,55 @@ a
 summary(a)
 ######
 # linreg
+#lm(Petal.Length~Species, data = iris)
 obj<-linreg(Petal.Length~Species, data = iris)
+x<-rnorm(1000);y<-rnorm(1000);y<-5*x+y+10;min_data<-data.frame(x,y)
+obj<-linreg(y~x,min_data)
 obj
 summary(obj)
 resid(obj)
 ##############
 
-print(obj)
 
-print.linreg(obj)
+plot.linreg <- function(obj) {
+  dataint <- data.frame(residual = as.numeric(obj$Resid), fits = as.numeric(obj$Fitts), std_residual = as.numeric(sqrt(abs(scale(obj$Resid)))))
+  # bandwidth1<-10
+  # bandwidth2<-10
+  # dataint$fits_residual_ks<-ksmooth(dataint$fits,dataint$residual,kernel = "normal",bandwidth=bandwidth1)$y
+  # dataint$fits_std_residual_ks<-ksmooth(dataint$fits,dataint$std_residual,kernel = "normal",bandwidth=bandwidth2)$y
+  # 
+  #Residuals vs Fitted
+  pl_1 <- ggplot(data = dataint, aes(x = fits, y = residual) ) +
+    geom_point() + 
+    labs(x = "Fitted values", y = "Residuals") +
+    geom_smooth(method="loess", se = FALSE, color = "red") + 
+    geom_hline(yintercept = 0) + theme_bw() + ggtitle("Residuals vs Fitted") +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+  #Standardized residuals vs Fitted
+  pl_2 <- ggplot(data = dataint, aes(x = fits, y = std_residual) ) +
+    geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
+    geom_smooth(method="loess", se = FALSE, color = "red") + 
+    geom_hline(yintercept = 0) + 
+    theme_bw() + 
+    ggtitle("Standardized residuals vs Fitted") +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+  cat ("Press [enter] to continue")
+  line <- readline()
+  pl_1
+  Sys.sleep(0.1)
+  cat ("Press [enter] to continue")
+  line <- readline()
+  pl_2
+}
 
-resid(obj)
-resid.linreg(obj)
 
-class(obj)
+plot(obj)
 
-methods(resid)
+#################################
 
-#
-rm(ls()[ls()=="linreg"])
-rm("linreg")
-
-
+obj$Xterms
 
 
 
