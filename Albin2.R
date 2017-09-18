@@ -1,10 +1,21 @@
+require(ggplot2)
+
 obj<-linreg(Petal.Length~Species, data = iris)
+summary(lm(Petal.Length~Species, data = iris))
 data<-iris
 formula<-Petal.Length~Species
 
+obj$print()
+obj$pred()
+obj$summary()
+obj$resid()
+obj$coef()
+obj$plot()
+
+
 linreg<-function(formula, data){
   
-  require(ggplot2)
+  
   
   x<-model.matrix(formula,data)
   y<-all.vars(formula)[1]
@@ -13,7 +24,7 @@ linreg<-function(formula, data){
   b_hat<-solve(t(x)%*%x)%*%t(x)%*%y
   y_fits<-x%*%b_hat
   e<-y-y_fits
-  df<-length(y)-(ncol(x)+1)
+  df<-length(y)-ncol(x)
   var_e<-(t(e)%*%e)/df
   
   var_b_hat<-as.numeric(var_e)*diag(solve((t(x)%*%x)))
@@ -28,37 +39,21 @@ linreg<-function(formula, data){
   
   input_var<-as.character(match.call(expand.dots = FALSE))
   
-  
- 
-  
-  tillbaka<-setRefClass("linreg", fields = list(Call="formula",
-                                                Coefficients="numeric",
-                                                X_terms="matrix",
-                                                Y_terms="matrix",
-                                                Fits="numeric",
-                                                Residuals="numeric",
-                                                df="numeric",
-                                                Var_residuals="numeric",
-                                                Std_betas="numeric",
-                                                tBetas="numeric",
-                                                Pvalues="numeric",
-                                                Input="character"),
-                        methods = list())
                                                 
                                                 
 
-  result <- tillbaka(Call=formula,
-                     Coefficients=b_hat_numeric,
-                     X_terms=x,
-                     Y_terms=y,
-                     Fits=as.numeric(y_fits),
-                     Residuals=as.numeric(e),
-                     df=df,
-                     Var_residuals=as.numeric(var_e),
-                     Std_betas=std_b_hat,
-                     tBetas=t_b_hat,
-                     Pvalues=p_b_hat,
-                     Input=input_var)
+  result <- make_class_linreg_RC(Call=formula,
+                                 Coefficients=b_hat_numeric,
+                                 X_terms=x,
+                                 Y_terms=y,
+                                 Fits=as.numeric(y_fits),
+                                 Residuals=as.numeric(e),
+                                 df=df,
+                                 Var_residuals=as.numeric(var_e),
+                                 Std_betas=std_b_hat,
+                                 tBetas=t_b_hat,
+                                 Pvalues=p_b_hat,
+                                 Input=input_var)
   
   
   
