@@ -44,14 +44,14 @@ linreg <- function(formula, data){
   t_betas <- betas/sqrt(var_betas)
   
   p_values <- 2*pt(abs(t_betas), df,lower.tail = FALSE)
-  
+
   pred <<- function(object, ...){
     UseMethod("predict")
   }
   
-  reglin <- setRefClass("linreg",fields = list(Call = "formula", Coefficients = "numeric", 
+  reglin <- setRefClass("linreg", fields = list(Call = "formula", Coefficients = "numeric", 
                                                Pvalues ="numeric", S_t = "numeric", Tvalue = "numeric",
-                                            Residual = "numeric", Fits = "numeric"),
+                                            Residual = "numeric", Fits = "numeric", plots =  "list"),
                         methods = list(  
                           #########################
                           print.linreg <<- function(result) {
@@ -92,29 +92,29 @@ linreg <- function(formula, data){
                           
                           #########################
                           
-                          plot.linreg <<- function(result) {
+                          plot = function() {
                             dataint <- data.frame(residual = result$Residual, fitos = result$Fits, std_residual = sqrt(abs(scale(result$Residual))))
                             #Residuals vs Fitted
-                            pl_1 <- ggplot(data = dataint, aes(x = fitos, y = residual) ) +
+                            plots <<- ggplot(data = dataint, aes(x = fitos, y = residual) ) +
                               geom_point() + labs(x = "Fitted values", y = "Residuals") +
-                              geom_smooth(method="loess", se = FALSE, color = "red") + 
+                              geom_smooth(method="loess", se = FALSE, color = "red") +
                               geom_hline(yintercept = 0) + theme_bw() + ggtitle("Residuals vs Fitted") +
                               theme(plot.title = element_text(hjust = 0.5))
-                            
+
                             #Standardized residuals vs Fitted
-                            pl_2 <- ggplot(data = dataint, aes(x = fitos, y = std_residual) ) +
+                            plots <<- ggplot(data = dataint, aes(x = fitos, y = std_residual) ) +
                               geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
-                              geom_smooth(method="loess", se = FALSE, color = "red") + 
+                              geom_smooth(method="loess", se = FALSE, color = "red") +
                               geom_hline(yintercept = 0) + theme_bw() + ggtitle("Standardized residuals vs Fitted") +
                               theme(plot.title = element_text(hjust = 0.5))
-                            
-                            cat ("Press [enter] to continue")
-                            line <- readline()
-                            pl_1
-                            Sys.sleep(0.01)
-                            cat ("Press [enter] to continue")
-                            line <- readline()
-                            pl_2
+
+                            # cat ("Press [enter] to continue")
+                            # line <- readline()
+                            # pl_1
+                            # Sys.sleep(0.01)
+                            # cat ("Press [enter] to continue")
+                            # line <- readline()
+                            # pl_2
                         },
                         #########################
                         
@@ -158,46 +158,14 @@ linreg <- function(formula, data){
   result <- reglin(Call = formula, Coefficients = c(betas), Pvalues = c(p_values),
                    S_t = c(var_betas), Tvalue = c(t_betas), Residual = c(resid), Fits = c(fitts))
   
-  # ret_u <- function() {
-  #   
-  #   beta<-as.character(round(result$Coefficients,2))
-  #   namn<-rownames(betas)
-  #   
-  #   n<-max(c(nchar(beta),20))
-  #   if(TRUE%in%(nchar(namn)>n)){
-  #     namn[nchar(namn)>n]<-
-  #       paste(substr(namn[nchar(namn)>n],1,(n-3)),"...",sep="")
-  #   }
-  #   
-  #   for(i in 1:length(result$Coefficients)){
-  #     if((nchar(namn)[i]==nchar(beta)[i])==FALSE){
-  #       
-  #       andra<-c(namn[i],beta[i])
-  #       ny<-andra
-  #       antal<-max(nchar(andra))
-  #       
-  #       lagga_till<-antal-min(nchar(andra))
-  #       plus<-paste(rep(" ",lagga_till),collapse = "")
-  #       ny[nchar(andra)<antal]<-paste(plus,andra[nchar(andra)<antal],sep = "")
-  #       
-  #       namn[i]<-ny[1]
-  #       beta[i]<-ny[2]
-  #     }
-  #     
-  #   }
-  #   cat("Call:",sep="\n")
-  #   cat(paste(as.character(result$Call)[2],as.character(result$Call)[1],as.character(result$Call)[3]), sep="\n")
-  #   cat(sep="\n")
-  #   cat("Coefficients:",sep="\n")
-  #   cat(namn,sep="\t")
-  #   cat("","\n")
-  #   cat(beta,sep="\t")
-  # }
-  # ret2 <- ret_u()
+
   
   return(result)
 }
 
+class(pl_1) == c("gg", "ggplot")
+
+residuals(lm(Y ~ x1 + x2 + x3, data))$copy()
 
 
 
@@ -212,12 +180,16 @@ methods(print)
 
 test <- linreg(Y ~ x1 + x2 + x3, data)
 
+test$plot()
+
 print(test)
 plot(test)
 summary(test)
 pred(test)
 pred(test)
 test$field()
+
+
 
 test$print
 residuals(lm(Y ~ x1 + x2 + x3, data))
