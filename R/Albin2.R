@@ -1,5 +1,8 @@
 #'@title Albins linreg function
-#'@description An algorithm that computes the greatest common divisor (GDC) of two numeric numbers.
+#'@description This is a function simular to lm
+#'@param formula shall the formula of the model
+#'@param data shall be a matrix or data.frame
+
 
 Albin2<-function(formula, data){
   

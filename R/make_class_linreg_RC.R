@@ -1,4 +1,5 @@
-
+#'@title Albins function to make RC class
+#'@description This function make a new RC class 
 
 make_class_linreg_RC<-setRefClass("linreg", fields = list(Call="formula",
                                                           Coefficients="numeric",
