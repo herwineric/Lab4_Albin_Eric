@@ -11,25 +11,27 @@
 #'@references The info about the algorithm can be found at this link  
 #' \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{wikepedia.}
 
-linreg <- function(formula, data){
+new <- function(formula, data){
   
   require(ggplot2)
   
   exp <-all.vars(expr = formula)[2:length(all.vars(expr = formula))]
   
   var1 <- paste("~",exp[1])
-  for( i in 2:length(exp)){
-    var1 <- paste(var1, "+", exp[i])
+  if(length(var1) > 1){
+    for( i in 2:length(exp)){
+      var1 <- paste(var1, "+", exp[i])
+    }
   }
-  
-  
+
+
   X <- model.matrix(as.formula(var1), data)
   Y <- all.vars(expr = formula)
   
   betas <- solve((t(X) %*% X))%*%t(X) %*% data[,Y[1]==names(data)]
   
   fitts <- X%*%betas
-  resid <- data$Y - fitts
+  resid <- data[,Y[1]==names(data)] - fitts
   df <- nrow(data)- length(colnames(X))
   sigma_2_resid <- (t(resid) %*% resid)/df
   sigma_2_resid <- c(sigma_2_resid)
@@ -47,34 +49,35 @@ linreg <- function(formula, data){
                    Coefficients = c(betas), Call = formula, sigma_betas = var_betas, Tvalue = c(t_betas), 
                    Pvalues = c(p_values), Input = input_data, Var_residuals = sigma_2_resid, df = df)
   
+  #return <- result$print()
+  
   return(result)
   
   
 }
 
-# 
-# 
-# formula <- Y ~ x1 + x2 + x3
-# 
-# formula <- Sepal.length ~ Species
-# 
-# data <- data.frame(x1=rnorm(120,1,50),x2=rnorm(120,5,50), Y = rnorm(120, 7,35), x3=as.factor(rep(1:12)))
-# 
-# 
-# test <- linreg(Y ~ x1 + x2 + x3, data)
-# 
-# 
-# 
-# test$Residual
-# test$resid()
-# 
-# test$summary()
-# 
-# test$
-# 
-# test$coef
-# 
-# 
-# 
-# test$pred()
-# test$print()
+
+linreg$print()
+
+
+formula <- Y ~ x1 + x2 + x3
+
+formula <- Sepal.Length ~ Species
+
+data(iris)
+
+data <- iris
+
+test <- linreg(formula, iris)
+
+class(test)
+
+data <- data.frame(x1=rnorm(120,1,50),x2=rnorm(120,5,50), Y = rnorm(120, 7,35), x3=as.factor(rep(1:12)))
+
+lm(Y ~ x1 + x2 + x3, data)
+
+
+test <- linreg(Y ~ x1 + x2 + x3, data)
+
+
+reglin$coef
