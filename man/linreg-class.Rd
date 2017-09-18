@@ -23,6 +23,8 @@ A Reference Class to represent a bank account.
 
 \item{\code{print()}}{Hej hej}
 
+\item{\code{resid()}}{Solrosen}
+
 \item{\code{summary()}}{tapas}
 }}
 

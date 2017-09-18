@@ -1,21 +1,7 @@
-require(ggplot2)
+#'@title Albins linreg function
+#'@description An algorithm that computes the greatest common divisor (GDC) of two numeric numbers.
 
-obj<-linreg(Petal.Length~Species, data = iris)
-summary(lm(Petal.Length~Species, data = iris))
-data<-iris
-formula<-Petal.Length~Species
-
-obj$print()
-obj$pred()
-obj$summary()
-obj$resid()
-obj$coef()
-obj$plot()
-
-
-linreg<-function(formula, data){
-  
-  
+Albin2<-function(formula, data){
   
   x<-model.matrix(formula,data)
   y<-all.vars(formula)[1]
