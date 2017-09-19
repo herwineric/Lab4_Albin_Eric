@@ -1,5 +1,4 @@
 library(testthat)
-library(Lab4ofDOOM)
 
 context("linreg")
 
