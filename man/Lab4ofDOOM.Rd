@@ -6,13 +6,7 @@
 \alias{Lab4ofDOOM-package}
 \title{Lab4ofDOOM: A package to make a linjer regression}
 \description{
-This package help you to do a linjer regression with "Reference Class" 
-
-
-
-\describe{
-  \item{linreg_v2}{number of the first node}
-}
+This package help you to do a linjer regression with "Reference Class"
 }
 \section{The packages functions}{
 

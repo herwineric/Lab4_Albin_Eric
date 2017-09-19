@@ -1,12 +1,23 @@
 library(ggplot2)
+library(Lab4ofDOOM)
 
 ##### Prova funktionerna #####
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
-linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+
+
+
+linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)
+
+example(linreg_v2)
+
+
+Lab4ofDOOM::linreg_v2
+stats::
 
 
 ######## Extra

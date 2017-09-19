@@ -7,12 +7,14 @@
 #' @field data A object of class data.frame
 #' 
 #'@examples
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
-#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+#' data(iris)
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
+#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+#' @export linreg_v2
 #' 
 #' 
 linreg_v2<-setRefClass("linreg", fields = list(formula="formula", 
