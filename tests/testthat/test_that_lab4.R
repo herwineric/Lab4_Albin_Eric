@@ -1,5 +1,3 @@
-library(testthat)
-
 context("linreg")
 
 data("iris")

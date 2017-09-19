@@ -1,7 +1,8 @@
 library(ggplot2)
 library(Lab4ofDOOM)
+devtools::use_testthat()
 
-##### Prova funktionerna #####
+ye##### Prova funktionerna #####
 linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
 linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
 linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
