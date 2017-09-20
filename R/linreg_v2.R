@@ -8,16 +8,17 @@
 #' 
 #'@examples
 #' data(iris)
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
-#' #linreg_v2$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
-#' @export linreg_v2
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
+#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+#' @export linreg
+#' @export 
 #' 
 #' 
-linreg_v2<-setRefClass("linreg", fields = list(formula="formula", 
+linreg<-setRefClass("linreg", fields = list(formula="formula", 
                                             data="data.frame",
                                             Call="character",
                                             Coefficients="numeric",
@@ -90,12 +91,30 @@ linreg_v2<-setRefClass("linreg", fields = list(formula="formula",
                         
                         Dataset<-Call[1]
                         Formula<-Call[2]
-                        
                         Formula<-paste("linreg(formula = ",Formula,", data = ",Dataset,")",sep="")
-                        svar<-list(Formula=Formula,
-                                   Coefficients=Coefficients)
+                        beta<-Coefficients
+                        namn<-names(beta)
+                        names(beta)<-NULL
+                        beta<-round(beta,4)
                         
-                        return((svar))
+                        
+                        for(i in 1:length(beta)){
+                          beta[i]<-format(beta[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
+                          namn[i]<-format(namn[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
+                        }
+                       
+                        cat("Call:",sep="\n")
+                        cat(Formula, sep="\n")
+                        cat(sep="\n")
+                        cat("Coefficients:",sep="\n")
+                        cat(namn,sep="\t")
+                        cat("","\n")
+                        cat(beta,sep="\t")
+                        cat("",sep="\n")
+                        cat("",sep="\n")
+                        
+                        
+                        
                         
                         
                       },
@@ -151,7 +170,7 @@ linreg_v2<-setRefClass("linreg", fields = list(formula="formula",
                         "Printing out two good graph!"
                         dataint <- data.frame(residual = Residuals, fits = Fits, std_residual = sqrt(abs(scale(Residuals))))
                         
-                        
+                        require(ggplot2)
                         #Residuals vs Fitted
                         pl_1 <- ggplot(data = dataint, aes(x = fits, y = residual) ) +
                           geom_point() +
