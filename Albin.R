@@ -15,6 +15,15 @@ data <- iris
 Call<-character()
 Call[1]<-"iris"
 Call[2]<- "Petal.Length ~ Sepal.Width + Sepal.Length"
+
+formula<- Petal.Length~Species
+data <- iris
+Call<-character()
+Call[1]<-"iris"
+Call[2]<- "Petal.Length~Species"
+
+
+
 ######## 
 library(testthat)
 

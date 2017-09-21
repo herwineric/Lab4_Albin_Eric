@@ -4,9 +4,9 @@
 \name{Lab4ofDOOM}
 \alias{Lab4ofDOOM}
 \alias{Lab4ofDOOM-package}
-\title{Lab4ofDOOM: A package to make a linjer regression}
+\title{Lab4ofDOOM: A package to make a linear regression}
 \description{
-This package help you to do a linjer regression with "Reference Class"
+This package help you to do a linear regression with "Reference Class"
 }
 \section{The packages functions}{
 

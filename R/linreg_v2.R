@@ -8,12 +8,12 @@
 #' 
 #'@examples
 #' data(iris)
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
-#' #linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$print()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$pred()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$summary()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$resid()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$coef()
+#' linreg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris)$plot()
 #' @export linreg
 #' @export 
 #' 
@@ -98,31 +98,40 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                         beta<-round(beta,4)
                         
                         
-                        for(i in 1:length(beta)){
+                        for(i in 2:length(beta)){
                           beta[i]<-format(beta[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
                           namn[i]<-format(namn[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
                         }
-                       
+                        
+                        beta[1]<-format(beta[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients:")),justify = c("right"))
+                        namn[1]<-format(namn[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients:")),justify = c("right"))
+                        
                         cat("Call:",sep="\n")
                         cat(Formula, sep="\n")
                         cat(sep="\n")
                         cat("Coefficients:",sep="\n")
-                        cat(namn,sep="\t")
-                        cat("","\n")
-                        cat(beta,sep="\t")
-                        cat("",sep="\n")
-                        cat("",sep="\n")
-                        
-                        
-                        
-                        
-                        
+                        cat(paste(namn,collapse = "  "),sep="",collapse="\n")
+                        cat(paste(beta,collapse = "  "),sep="",collapse="\n")
                       },
                       
                       summary = function(){
                         "Give you a nice summary of the calculation"
                         
+                        ########## Samma som print #######
+                        Dataset<-Call[1]
+                        Formula<-Call[2]
+                        Formula<-paste("linreg(formula = ",Formula,", data = ",Dataset,")",sep="")
+                        beta<-Coefficients
+                        namn<-names(beta)
+                        names(beta)<-NULL
+                        beta<-round(beta,4)
                         
+                        
+                        for(i in 1:length(beta)){
+                          beta[i]<-format(beta[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
+                          namn[i]<-format(namn[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
+                        }
+                        ##########
                         
                         Variable<-as.character(names(Coefficients))
                         Estimate<-round(Coefficients,3)
@@ -134,19 +143,34 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                         row.names(svar)<-NULL
                         svar$Variable<-as.character(svar$Variable)
                         
-                        min_lista<-list()
-                        min_lista[[1]]<-paste(c("Variable","Estimate","Std_Error","t_value","Pr_t"),collapse=" ")
-                        for(i in 2:(nrow(svar)+1)){
-                          min_lista[[i]]<-paste(svar[(i-1),], collapse=" ")
+                        
+                        svar<-rbind(c(" ","Estimate","Std. Error","t value","Pr(>|t|)"),svar)
+                        
+                        for(i in 1:length(svar)){
+                          for(j in 1:nrow(svar)){
+                            svar[j,i]<-format(svar[j,i], width=max(nchar(svar[,i])),justify = c("right"))
+                          }
                         }
-                        svar2<-min_lista
                         
-                        Residual_skrivaut<-paste("Residual standard error: ",round(sqrt(Var_residuals),5) ," on " ,df, " degrees of freedom",sep="")
-                        svar<-list(svar,Residual_skrivaut)
-                        svar2[[(length(svar2)+1)]]<-Residual_skrivaut
+                        svar$p_stjarna<-""
+                        svar$p_stjarna[svar$Pr_t<0.001]<-"***"
+                        svar$p_stjarna[svar$Pr_t>0.001]<-"**"
+                        svar$p_stjarna[svar$Pr_t>0.01]<-"*"
+                        svar$p_stjarna[svar$Pr_t>0.05]<-"."
+                        svar$p_stjarna[svar$Pr_t>0.1]<-" "
+                        svar$p_stjarna<-format(svar$p_stjarna, width=max(nchar(svar$p_stjarna)),justify = c("right"))
                         
                         
-                        return(svar)
+                        cat("Call:",sep="\n")
+                        cat(Formula, sep="\n")
+                        cat(sep="\n")
+                        cat("Coefficients:",sep="\n")
+                        for(i in 1:nrow(svar)){
+                          cat(paste(svar[i,],collapse = "   "),sep="",collapse="\n")
+                        }
+                        cat("",sep="\n")
+                        cat(paste("Residual standard error: ",round(sqrt(Var_residuals),5) ," on " ,df, " degrees of freedom",sep=""))
+
                         
                       },
                       
@@ -170,9 +194,13 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                         "Printing out two good graph!"
                         dataint <- data.frame(residual = Residuals, fits = Fits, std_residual = sqrt(abs(scale(Residuals))))
                         
+                        class(dataint$std_residual)
+                        
                         require(ggplot2)
+                        test<-ksmooth(dataint$fits,dataint$residual,kernel = "normal",bandwidth=1)$y
                         #Residuals vs Fitted
-                        pl_1 <- ggplot(data = dataint, aes(x = fits, y = residual) ) +
+                        pl_1 <- 
+                          ggplot(data = dataint, aes(x = fits, y = residual) ) +
                           geom_point() +
                           labs(x = "Fitted values", y = "Residuals") +
                           geom_smooth(method="loess", se = FALSE, color = "red") +
