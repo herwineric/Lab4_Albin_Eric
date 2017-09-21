@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Lab4ofDOOM"
+author: "Eric Herwin and Albin Västerlund"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,23 +16,25 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+This package contains one function of a class RC and the prime function for this is to calculate a linear regression. 
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+## The function, class and methods
+
+The function and class, `linreg` and the function can take two arguments, `formula` and `data`. The function has serveral methods connected to it and if you refer to them they will do different tasks. Such as:
+
+- `print()`: will print out the basic information about the linear regression, like how the Call function looks like and the coefficient and its estimations.
+- `summary()`: will print out the same information as the `print()` method, but will include t-values, p-values, standard errors for parameters. It will also include the standard deviation for the model aswell.
+- `resid()`: will print out the residuals of the model as a vector.
+- `pred()`: will print out the predicted values of the model as a vector.
+- `coef()`: will print out the coeficients estimations as a vector.
+- `plot()`: this will plot the residuals vs. fitts and the standardized residuals vs fitts. The plots are generated with the package `ggplot2`. How these plots will look like are presented in the Plot chapter, little further down.
+
+These methods need be "fed" with som information on what to do. The function `new(...)` can insert what you want in to the class. How to refer to this method for a RC class you need to use a `$` sign in the context of `linreg$new(formula, data)`. To refer to a methods that you have created, and to use the information you have put in to the `new(...)` function, you have to put in, for example `linreg$new(formula, data)$print()`. This will print out the information about the linear regression according to the `print()` method.
+
 
 ## Vignette Info
 
 Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
 
 ## Figures
 
