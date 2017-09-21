@@ -345,7 +345,7 @@ linreg <- setRefClass("linreg", fields = list(formula = "formula", data = "data.
 
 
 
-linreg_mod <- linreg$new(formula, iris)
+linreg_mod <- linreg$new(formula = formula, data =iris)$resid()
 linreg_mod$print()
 
 linreg_mod@.data

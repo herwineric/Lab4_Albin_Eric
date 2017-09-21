@@ -1,6 +1,6 @@
-#'@title Lab4ofDOOM: A package to make a linjer regression 
+#'@title Lab4ofDOOM: A package to make a linear regression 
 #'
-#'@description This package help you to do a linjer regression with "Reference Class" 
+#'@description This package help you to do a linear regression with "Reference Class" 
 #'
 #' 
 #' 
