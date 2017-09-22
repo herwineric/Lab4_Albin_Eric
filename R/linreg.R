@@ -1,4 +1,4 @@
-#'@title Do you want to make a linjer regression?
+#'@title Do you want to make a linear regression?
 #'@description This function make a "Reference Class" with class=linreg for a linjer regression
 #'
 #'
