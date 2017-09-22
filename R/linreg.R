@@ -228,3 +228,4 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                       }
                     )
 )
+
