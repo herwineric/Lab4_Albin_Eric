@@ -194,7 +194,7 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                       
                       plot = function() {
                         
-                        "Printing out two good graph!"
+                        "Printing out two graps of residuals and standardized residuals vs. fitted values."
                         dataint <- data.frame(residual = Residuals, fits = Fits, std_residual = sqrt(abs(scale(Residuals))))
                         
                         class(dataint$std_residual)
@@ -220,7 +220,7 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                         
                         #Standardized residuals vs Fitted
                         pl_2 <- ggplot(data = dataint, aes(x = fits, y = std_residual) ) +
-                          geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
+                          geom_point() + labs(x = "Fitted values", y = expression(sqrt("|Standardized residuals|"))) +
                           geom_hline(yintercept = 0) +
                           theme_bw() +
                           ggtitle("Standardized residuals vs Fitted") +
