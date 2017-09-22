@@ -103,8 +103,11 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                           namn[i]<-format(namn[i], width=max(nchar(beta[i]),nchar(namn[i])),justify = c("right"))
                         }
                         
-                        beta[1]<-format(beta[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients:")),justify = c("right"))
-                        namn[1]<-format(namn[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients:")),justify = c("right"))
+                        beta[1]<-format(beta[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients")),justify = c("right"))
+                        namn[1]<-format(namn[1], width=max(nchar(beta[1]),nchar(namn[1]),nchar("Coefficients")),justify = c("right"))
+                        
+                        beta[1]<-paste(beta[1]," ",sep="")
+                        namn[1]<-paste(namn[1]," ",sep="")
                         
                         cat("Call:",sep="\n")
                         cat(Formula, sep="\n")
@@ -203,18 +206,31 @@ linreg<-setRefClass("linreg", fields = list(formula="formula",
                           ggplot(data = dataint, aes(x = fits, y = residual) ) +
                           geom_point() +
                           labs(x = "Fitted values", y = "Residuals") +
-                          geom_smooth(method="loess", se = FALSE, color = "red") +
                           geom_hline(yintercept = 0) + theme_bw() + ggtitle("Residuals vs Fitted") +
                           theme(plot.title = element_text(hjust = 0.5))
+                        
+                        if(!all(sapply(data[,colnames(data) %in% all.vars(formula)[-1]],is.factor))){
+                          pl_1 <- pl_1 + geom_smooth(method="loess", se=FALSE, color="red")
+                        } else{
+                          pl_1 <- pl_1 + stat_summary(fun.y=mean, colour="red", geom="line")
+                        }
+                        
+                        
+                        
                         
                         #Standardized residuals vs Fitted
                         pl_2 <- ggplot(data = dataint, aes(x = fits, y = std_residual) ) +
                           geom_point() + labs(x = "Fitted values", y = "Standardized residuals") +
-                          geom_smooth(method="loess", se = FALSE, color = "red") +
                           geom_hline(yintercept = 0) +
                           theme_bw() +
                           ggtitle("Standardized residuals vs Fitted") +
                           theme(plot.title = element_text(hjust = 0.5))
+                        
+                        if(!all(sapply(data[,colnames(data) %in% all.vars(formula)[-1]],is.factor))){
+                          pl_2 <- pl_2 + geom_smooth(method="loess", se=FALSE, color="red")
+                        } else{
+                          pl_2 <- pl_2 + stat_summary(fun.y=mean, colour="red", geom="line")
+                        }
                         
                         list(pl_1,pl_2)
                         
