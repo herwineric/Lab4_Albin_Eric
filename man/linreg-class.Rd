@@ -4,7 +4,7 @@
 \name{linreg-class}
 \alias{linreg-class}
 \alias{linreg}
-\title{Do you want to make a linjer regression?}
+\title{Do you want to make a linear regression?}
 \description{
 This function make a "Reference Class" with class=linreg for a linjer regression
 }
@@ -21,7 +21,7 @@ This function make a "Reference Class" with class=linreg for a linjer regression
 \describe{
 \item{\code{coef()}}{Give you the coef values as a numeric vector}
 
-\item{\code{plot()}}{Printing out two good graph!}
+\item{\code{plot()}}{Printing out two graps of residuals and standardized residuals vs. fitted values.}
 
 \item{\code{pred()}}{Give you the predicted values as a numeric vector}
 
